@@ -10,19 +10,11 @@ const SongsService = {
         'sng.title',
         // 'sng.date_created',
         'sng.content',
+        'sng.key',
         ...userFields,
-        db.raw(
-          `count(DISTINCT rev) AS number_of_reviews`
-        ),
-        db.raw(
-          `AVG(rev.rating) AS average_review_rating`
-        ),
+
       )
-      // .leftJoin(
-      //   'thingful_reviews AS rev',
-      //   'thg.id',
-      //   'rev.thing_id',
-      // )
+
       .leftJoin(
         'buddy_users AS usr',
         'sng.user_id',
@@ -33,73 +25,32 @@ const SongsService = {
 
   getById(db, id) {
     return SongsService.getAllThings(db)
-      .where('thg.id', id)
+      .where('sng.id', id)
       .first()
   },
 
-  // getReviewsForThing(db, thing_id) {
-  //   return db
-  //     .from('thingful_reviews AS rev')
-  //     .select(
-  //       'rev.id',
-  //       'rev.rating',
-  //       'rev.text',
-  //       'rev.date_created',
-  //       ...userFields,
-  //     )
-  //     .where('rev.thing_id', thing_id)
-  //     .leftJoin(
-  //       'thingful_users AS usr',
-  //       'rev.user_id',
-  //       'usr.id',
-  //     )
-  //     .groupBy('rev.id', 'usr.id')
-  // },
+
 
   serializeSongs(songs) {
-    return songs.map(this.serializeSongs)
+    console.log(songs)
+    return songs.map(this.serializeSong)
   },
 
-  serializeSongs(songs) {
-    const songsTree = new Treeize()
+  serializeSong(song) {
+    console.log(song)
 
-    // Some light hackiness to allow for the fact that `treeize`
-    // only accepts arrays of objects, and we want to use a single
-    // object.
-    const songData = songTree.grow([ song ]).getData()[0]
+  
 
     return {
-      id: songData.id,
-      title: xss(songData.title),
-      content: xss(songData.content),
-      // date_created: thingData.date_created,
-      user: songData.user || {},
-      // number_of_reviews: Number(thingData.number_of_reviews) || 0,
-      // average_review_rating: Math.round(thingData.average_review_rating) || 0,
+       id: song.id,
+      title: xss(song.title),
+      content: xss(song.content),
+      key: xss(song.key),
+
     }
   },
 
-  // serializeThingReviews(reviews) {
-  //   return reviews.map(this.serializeThingReview)
-  // },
 
-  // serializeThingReview(review) {
-  //   const reviewTree = new Treeize()
-
-  //   // Some light hackiness to allow for the fact that `treeize`
-  //   // only accepts arrays of objects, and we want to use a single
-  //   // object.
-  //   const reviewData = reviewTree.grow([ review ]).getData()[0]
-
-  //   return {
-  //     id: reviewData.id,
-  //     rating: reviewData.rating,
-  //     thing_id: reviewData.thing_id,
-  //     text: xss(reviewData.text),
-  //     user: reviewData.user || {},
-  //     date_created: reviewData.date_created,
-  //   }
-  // },
 }
 
 const userFields = [

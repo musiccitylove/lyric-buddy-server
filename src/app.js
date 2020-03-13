@@ -17,12 +17,16 @@ app.use(morgan(morganOption))
 app.use(helmet())
 app.use(cors())
 
-app.use('/api/songs', songsRouter)
+app.use('/songs', songsRouter)
 
 
 app.get('/', (req, res) => {
   res.send('Hello, world!')
 })
+
+// app.get('/songs', (req, res) => {
+//   res.send('We have juicy cheese burgers!');
+// })
 
  app.use(function errorHandler(error, req, res, next) {
   let response

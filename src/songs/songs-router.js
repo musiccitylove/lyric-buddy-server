@@ -7,9 +7,9 @@ const songsRouter = express.Router()
 songsRouter
   .route('/')
   .get((req, res, next) => {
-    SongsService.getAllThings(req.app.get('db'))
-      .then(things => {
-        res.json(SongsService.serializeThings(things))
+    SongsService.getAllSongs(req.app.get('db'))
+      .then(songs => {
+        res.json(SongsService.serializeSongs(songs))
       })
       .catch(next)
   })
