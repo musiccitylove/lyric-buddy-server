@@ -1,8 +1,19 @@
+const path = require('path');
 const express = require('express')
+const xss = require('xss');
 const SongsService = require('./songs-services')
 const { requireAuth } = require('../middleware/jwt-auth')
 
 const songsRouter = express.Router()
+const jsonParser = express.json();
+
+const serializeSong = song => ({
+  id: song.id,
+  title: xss(song.title),
+  content: xss(song.content),
+  // date_modified: note.date_modified,
+  songkey: song.songkey
+});
 
 songsRouter
   .route('/')
@@ -13,30 +24,41 @@ songsRouter
       })
       .catch(next)
   })
+  .post(jsonParser, (req, res, next) => {
+    const { title, content, songkey } = req.body;
+    const newSong = { title, content, songkey };
+
+    for (const [key, value] of Object.entries(newSong)) {
+      if (value == null) { // eslint-disable-line eqeqeq
+        return res.status(400).json({
+          error: { message: `Missing '${key}' in request body`}
+        });
+      }
+    }
+
+
+    SongsService.insertSong(
+      req.app.get('db'),
+      newSong
+    )
+      .then(song => {
+        res
+          .status(201)
+          .location(path.posix.join(req.originalUrl, `${song.id}`))
+          .json(serializeSong(song));
+      })
+      .catch(next);
+  });
 
 songsRouter
   .route('/:song_id')
   .all(requireAuth)
   .all(checkSongsExists)
   .get((req, res) => {
-    res.json(SongsService.serializeSongs(res.song))
+    res.json(serializeSongs(res.song))
   })
 
-// songsRouter.route('/:songs_id/reviews/')
-//   .all(requireAuth)
-//   .all(checkThingExists)
-//   .get((req, res, next) => {
-//     ThingsService.getReviewsForThing(
-//       req.app.get('db'),
-//       req.params.thing_id
-//     )
-//       .then(reviews => {
-//         res.json(ThingsService.serializeThingReviews(reviews))
-//       })
-//       .catch(next)
-//   })
 
-/* async/await syntax for promises */
 async function checkSongsExists(req, res, next) {
   try {
     const thing = await SongsService.getById(

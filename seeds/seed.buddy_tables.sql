@@ -14,7 +14,7 @@ VALUES
   ('lexlor', 'Alex Taylor', '$2a$12$7.l7Gp8NgjERgigQrHzRYOlvfn5/C3xJG7EXk7KDX4/jCfFNl7C5y'),
   ('wippy', 'Ping Won In', '$2a$12$760GLparKtz.oMeBo4rgi.uQzGNEvby6edFzwexQtDssvMpRpto5G');
 
-INSERT INTO buddy_songs (title, key, user_id, content)
+INSERT INTO buddy_songs (title, songkey, user_id, content)
 VALUES
   ('Hand-Painted Rubber Ducky', 'Am', 1, 'This ducky has been hand-painted and is now art. Therefore it is useless and cannot be put in water.'),
   ('Cloning Machine', 'B', 2, '100% guaranteed to occasionally work every time! Requires a 167.23v power outlet or a dragonscale battery (obtained separately by solving a riddle).'),

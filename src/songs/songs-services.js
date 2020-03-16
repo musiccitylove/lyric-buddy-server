@@ -10,7 +10,7 @@ const SongsService = {
         'sng.title',
         // 'sng.date_created',
         'sng.content',
-        'sng.key',
+        'sng.songkey',
         ...userFields,
 
       )
@@ -21,6 +21,16 @@ const SongsService = {
         'usr.id',
       )
       .groupBy('sng.id', 'usr.id')
+  },
+
+  insertSong(knex, newSong) {
+    return knex
+      .insert(newSong)
+      .into('buddy_songs')
+      .returning('*')
+      .then(rows => {
+        return rows[0];
+      });
   },
 
   getById(db, id) {
@@ -45,7 +55,7 @@ const SongsService = {
        id: song.id,
       title: xss(song.title),
       content: xss(song.content),
-      key: xss(song.key),
+      songkey: xss(song.songkey),
 
     }
   },
