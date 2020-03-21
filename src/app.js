@@ -26,10 +26,6 @@ app.get('/', (req, res) => {
   res.send('Hello, world!')
 })
 
-// app.get('/songs', (req, res) => {
-//   res.send('We have juicy cheese burgers!');
-// })
-
  app.use(function errorHandler(error, req, res, next) {
   let response
     if (NODE_ENV === 'production') {

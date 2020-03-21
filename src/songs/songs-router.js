@@ -11,7 +11,6 @@ const serializeSong = song => ({
   id: song.id,
   title: xss(song.title),
   content: xss(song.content),
-  // date_modified: note.date_modified,
   songkey: song.songkey
 });
 
